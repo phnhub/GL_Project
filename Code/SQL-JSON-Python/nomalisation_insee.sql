@@ -177,12 +177,12 @@ select * from insee;
 -- score_va_region,score_pib from insee;
 
 drop table region;
-create table Region as select codgeo,reg, moyenne_revenu_fiscal_regionaux, reg_moyenne_salaire_horaire, reg_moyenne_salaire_cadre_horaire,reg_moyenne_salaire_prof_intermediaire,
+create table Region as select reg, moyenne_revenu_fiscal_regionaux, reg_moyenne_salaire_horaire, reg_moyenne_salaire_cadre_horaire,reg_moyenne_salaire_prof_intermediaire,
 reg_moyenne_salaire_employes_horaire, reg_moyenne_salaire_ouvrie_horaire, valeur_ajoutee_regionale,nb_industries_bien_intermediaires, nb_de_commerces,nb_services_aux_soins_particuliers, nb_institution_education_sante_action,pib_regionnal, moyenne_revenu_fiscaux,
 score_va_region,score_pib from insee;
 
 ALTER TABLE region
-ADD primary key (codgeo); 
+ADD primary key (reg); 
 
 select * from region;
 
@@ -207,11 +207,11 @@ drop table libgeo;
 create table libgeo as select libgeo,dep, reg from insee;
  
 drop table departement;
-create table departement as select codgeo,libgeo,dep, dep_moyenne_salaire_horaire, dep_moyenne_salaire_cadre_horaire, dep_moyenne_salaire_prof_intermediaire,
+create table departement as select libgeo,dep, dep_moyenne_salaire_horaire, dep_moyenne_salaire_cadre_horaire, dep_moyenne_salaire_prof_intermediaire,
 dep_moyenne_salaire_employes_horaire, dep_moyenne_salaire_ouvrie_horaire,moyenne_revenu_fiscal_departementaux from insee;
 
 ALTER TABLE departement
-ADD primary key (codgeo); 
+ADD primary key (dep); 
 
 ALTER TABLE libgeo
 ADD primary key(libgeo,dep,reg); 
@@ -223,46 +223,43 @@ drop dep_moyenne_salaire_prof_intermediaire,
 drop dep_moyenne_salaire_employes_horaire,
 drop dep_moyenne_salaire_ouvrie_horaire,
 drop moyenne_revenu_fiscal_departementaux,
-drop dep,
 drop cp;
 
 
-alter table insee drop reg;
-
 drop table index_fiscal;
-create table index_fiscal as select codgeo,indice_fiscal_partiel, score_fiscal from insee;
+create table index_fiscal as select indice_fiscal_partiel, score_fiscal from insee;
+
 
 ALTER TABLE index_fiscal
-ADD primary key(codgeo); 
+ADD primary key(indice_fiscal_partiel); 
 
 alter table insee drop score_fiscal; 
 
 drop table score_equip_sante_dynam;
 
-create table score_equip_sante_dynam as select codgeo,dynamique_demographique_bv,score_equipement_sante from insee;
+create table score_equip_sante_dynam as select dynamique_demographique_bv,score_equipement_sante from insee;
 
 ALTER TABLE score_equip_sante_dynam
-ADD primary key(codgeo); 
+ADD primary key(dynamique_demographique_bv); 
 
-alter table insee drop dynamique_demographique_bv,
-drop score_equipement_sante;
+alter table insee drop score_equipement_sante;
 
 select * from insee;
 
 ALTER TABLE insee
-ADD FOREIGN KEY (codgeo) REFERENCES score_equip_sante_dynam(codgeo); 
+ADD FOREIGN KEY (dynamique_demographique_bv) REFERENCES score_equip_sante_dynam(dynamique_demographique_bv); 
 
 ALTER TABLE insee
 ADD FOREIGN KEY (libgeo) REFERENCES libgeo(libgeo); 
 
 ALTER TABLE insee
-ADD FOREIGN KEY (codgeo) REFERENCES index_fiscal(codgeo); 
+ADD FOREIGN KEY (index_fiscal_partiel) REFERENCES index_fiscal(index_fiscal_partiel); 
 
 ALTER TABLE insee
-ADD FOREIGN KEY (codgeo) REFERENCES departement(codgeo); 
+ADD FOREIGN KEY (dep) REFERENCES departement(dep); 
 
 ALTER TABLE insee
-ADD FOREIGN KEY (codgeo) REFERENCES region(codgeo); 
+ADD FOREIGN KEY (reg) REFERENCES region(reg); 
 
 
 select * from libgeo;
